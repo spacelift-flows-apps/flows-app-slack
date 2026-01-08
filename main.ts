@@ -222,6 +222,7 @@ To complete the Slack app setup:
       return {
         newStatus: "in_progress",
         customStatusDescription: "Please follow the prompt.",
+        nextScheduleDelay: null,
       };
     }
   },
