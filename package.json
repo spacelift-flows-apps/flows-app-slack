@@ -1,7 +1,7 @@
 {
   "type": "module",
   "dependencies": {
-    "@slflows/sdk": "^0.2.0",
+    "@slflows/sdk": "^0.7.0",
     "typescript": "^5.8.3",
     "@types/node": "^22.15.28"
   },

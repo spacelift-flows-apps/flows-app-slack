@@ -4,33 +4,33 @@ export const slackMessageTimestampSchema = {
   type: "string",
   description:
     "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
-};
+} satisfies JsonSchema;
 
 export const slackChannelIdSchema = {
   type: "string",
   description:
     "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
-};
+} satisfies JsonSchema;
 
 export const slackUserIdSchema = {
   type: "string",
   description: "ID of a Slack user (e.g., U0123ABC).",
-};
+} satisfies JsonSchema;
 
 export const slackTeamIdSchema = {
   type: "string",
   description: "ID of a Slack workspace (team) (e.g., T0123ABC).",
-};
+} satisfies JsonSchema;
 
 export const slackAppIdSchema = {
   type: "string",
   description: "ID of a Slack App (e.g., A0123ABC).",
-};
+} satisfies JsonSchema;
 
 export const slackBotIdSchema = {
   type: "string",
   description: "ID of a bot user (e.g., B0123ABC).",
-};
+} satisfies JsonSchema;
 
 export const slackBlockKitBlockSchema: JsonSchema = {
   oneOf: [
@@ -329,37 +329,37 @@ export const slackThreadTsSchema = {
   type: "string",
   description:
     "Optional. The timestamp of the parent message, if this message is part of a thread. If this message starts a new thread by replying to an existing message, this field will be present. If it's a brand new message not in a thread, this field is usually absent unless it becomes the parent of a new thread, in which case `thread_ts` would equal `ts`.",
-};
+} satisfies JsonSchema;
 
 export const slackParentUserIdSchema = {
   type: "string",
   description:
     "Optional. The user ID of the author of the parent message, if this message is a reply in a thread.",
-};
+} satisfies JsonSchema;
 
 export const slackMessageTextSchema = {
   type: "string",
   description:
     "The textual content of the message. Markdown is supported by default in many contexts.",
-};
+} satisfies JsonSchema;
 
 export const slackEventTsSchema = {
   type: "string",
   description:
     "The timestamp of when an event was dispatched by Slack. It's often very close to the message's own 'ts'.",
-};
+} satisfies JsonSchema;
 
 export const slackClientMsgIdSchema = {
   type: "string",
   description:
     "A unique identifier for a message, sent by the client. Typically present for user-posted messages.",
-};
+} satisfies JsonSchema;
 
 export const slackChannelTypeSchema = {
   type: "string",
   description:
     "Indicates the type of channel: 'channel' (public), 'group' (private), 'im' (direct message), 'mpim' (multi-person direct message).",
-};
+} satisfies JsonSchema;
 
 export const slackBotProfileIconsSchema = {
   type: "object",
@@ -370,7 +370,7 @@ export const slackBotProfileIconsSchema = {
     image_72: { type: "string", description: "URL for 72x72px icon." },
   },
   required: ["image_36", "image_48", "image_72"],
-};
+} satisfies JsonSchema;
 
 export const slackBotProfileSchema = {
   type: "object",
@@ -402,4 +402,4 @@ export const slackBotProfileSchema = {
     },
   },
   required: ["id", "deleted", "name", "updated", "app_id", "icons", "team_id"],
-};
+} satisfies JsonSchema;
