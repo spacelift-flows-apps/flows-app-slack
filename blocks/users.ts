@@ -381,3 +381,120 @@ export const getUserInfo: AppBlock = {
     },
   },
 };
+
+export const lookupUserByEmail: AppBlock = {
+  name: "Lookup User by Email",
+  description: "Looks up a Slack user by their email address.",
+  category: "Users",
+  inputs: {
+    default: {
+      name: "Lookup",
+      description: "Trigger looking up a user by their email address.",
+      config: {
+        email: {
+          name: "Email",
+          description: "Email address of the user to look up.",
+          type: "string",
+          required: true,
+        },
+      },
+      async onEvent(input) {
+        const { slackBotToken } = input.app.config;
+        const { email } = input.event.inputConfig;
+
+        const { user } = await callSlackApi(
+          "users.lookupByEmail",
+          { email },
+          slackBotToken,
+          "form",
+        );
+
+        await events.emit({ user });
+      },
+    },
+  },
+  outputs: {
+    default: {
+      name: "User Found",
+      description:
+        "Emitted when the user has been successfully found by email.",
+      possiblePrimaryParents: ["default"],
+      type: {
+        type: "object",
+        properties: {
+          user: {
+            type: "object",
+            description: "The user object with detailed information.",
+            properties: {
+              id: slackUserIdSchema,
+              name: {
+                type: "string",
+                description: "The username of the user.",
+              },
+              real_name: {
+                type: "string",
+                description: "The real name of the user.",
+              },
+              display_name: {
+                type: "string",
+                description: "The display name of the user.",
+              },
+              email: {
+                type: "string",
+                description: "The email address of the user.",
+              },
+              is_bot: {
+                type: "boolean",
+                description: "True if this is a bot user.",
+              },
+              is_admin: {
+                type: "boolean",
+                description: "True if the user is an admin.",
+              },
+              is_owner: {
+                type: "boolean",
+                description: "True if the user is the workspace owner.",
+              },
+              is_primary_owner: {
+                type: "boolean",
+                description: "True if the user is the primary owner.",
+              },
+              is_restricted: {
+                type: "boolean",
+                description: "True if the user is a restricted account.",
+              },
+              is_ultra_restricted: {
+                type: "boolean",
+                description: "True if the user is an ultra restricted account.",
+              },
+              deleted: {
+                type: "boolean",
+                description: "True if the user has been deleted.",
+              },
+              profile: {
+                type: "object",
+                description: "The user's profile information.",
+                properties: {
+                  email: {
+                    type: "string",
+                    description: "The user's email address.",
+                  },
+                  real_name: {
+                    type: "string",
+                    description: "The user's real name.",
+                  },
+                  display_name: {
+                    type: "string",
+                    description: "The user's display name.",
+                  },
+                },
+              },
+            },
+            required: ["id", "name", "deleted", "profile"],
+          },
+        },
+        required: ["user"],
+      },
+    },
+  },
+};

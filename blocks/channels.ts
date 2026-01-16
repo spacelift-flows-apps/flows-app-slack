@@ -669,3 +669,145 @@ export const kickUsersFromChannel: AppBlock = {
     },
   },
 };
+
+export const lookupChannelByName: AppBlock = {
+  name: "Lookup Channel by Name",
+  description:
+    "Looks up a Slack channel by its name. Searches public and private channels the bot has access to.",
+  category: "Channels",
+  inputs: {
+    default: {
+      name: "Lookup",
+      description: "Trigger looking up a channel by its name.",
+      config: {
+        name: {
+          name: "Channel Name",
+          description: "Name of the channel to look up (without the # prefix).",
+          type: "string",
+          required: true,
+        },
+        includePrivate: {
+          name: "Include Private Channels",
+          description:
+            "If true, searches both public and private channels. If false, only searches public channels.",
+          type: "boolean",
+          required: false,
+          default: true,
+        },
+      },
+      async onEvent(input) {
+        const { slackBotToken } = input.app.config;
+        const { name, includePrivate } = input.event.inputConfig;
+
+        if (!slackBotToken) {
+          throw new Error(
+            "Slack Bot Token not configured in the app. Cannot lookup channel.",
+          );
+        }
+
+        // Remove # prefix if provided
+        const channelName = name.startsWith("#") ? name.slice(1) : name;
+
+        // Build types to search
+        const types =
+          includePrivate !== false
+            ? "public_channel,private_channel"
+            : "public_channel";
+
+        // List conversations with pagination
+        let cursor: string | undefined;
+        let foundChannel: any = null;
+
+        do {
+          const slackApiPayload: Record<string, any> = {
+            types,
+            exclude_archived: true,
+            limit: 1000,
+          };
+
+          if (cursor) {
+            slackApiPayload.cursor = cursor;
+          }
+
+          const responseData = await callSlackApi(
+            "conversations.list",
+            slackApiPayload,
+            slackBotToken,
+            "form",
+          );
+
+          // Search for channel by name
+          foundChannel = responseData.channels.find(
+            (channel: any) => channel.name === channelName,
+          );
+
+          if (foundChannel) {
+            break;
+          }
+
+          cursor = responseData.response_metadata?.next_cursor;
+        } while (cursor);
+
+        if (!foundChannel) {
+          throw new Error(
+            `Channel with name "${channelName}" not found. The bot may not have access to this channel.`,
+          );
+        }
+
+        await events.emit({
+          channel: foundChannel,
+        });
+      },
+    },
+  },
+  outputs: {
+    default: {
+      name: "Channel Found",
+      description: "Emitted when the channel has been successfully found.",
+      possiblePrimaryParents: ["default"],
+      type: {
+        type: "object",
+        properties: {
+          channel: {
+            type: "object",
+            description: "The channel object returned by the Slack API.",
+            properties: {
+              id: slackChannelIdSchema,
+              name: {
+                type: "string",
+                description: "The name of the channel.",
+              },
+              is_channel: {
+                type: "boolean",
+                description: "True if this is a public channel.",
+              },
+              is_group: {
+                type: "boolean",
+                description: "True if this is a private channel.",
+              },
+              is_private: {
+                type: "boolean",
+                description: "True if this is a private channel.",
+              },
+              is_archived: {
+                type: "boolean",
+                description: "True if the channel is archived.",
+              },
+              created: {
+                type: "number",
+                description: "Unix timestamp when the channel was created.",
+              },
+              creator: slackUserIdSchema,
+              num_members: {
+                type: "number",
+                description: "Number of members in the channel.",
+              },
+            },
+            required: ["id", "name"],
+          },
+        },
+        required: ["channel"],
+      },
+    },
+  },
+};
