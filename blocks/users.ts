@@ -402,6 +402,12 @@ export const lookupUserByEmail: AppBlock = {
         const { slackBotToken } = input.app.config;
         const { email } = input.event.inputConfig;
 
+        if (!slackBotToken) {
+          throw new Error(
+            "Slack Bot Token not configured in the app. Cannot lookup user by email.",
+          );
+        }
+
         const { user } = await callSlackApi(
           "users.lookupByEmail",
           { email },
