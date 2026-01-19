@@ -24,6 +24,7 @@ import {
 import {
   getUserInfo,
   listUserGroupUsers,
+  lookupUserByEmail,
   updateUserGroupUsers,
 } from "./blocks/users.ts";
 import {
@@ -32,6 +33,7 @@ import {
   getChannelInfo,
   inviteUsersToChannel,
   kickUsersFromChannel,
+  lookupChannelByName,
   setChannelPurpose,
   setChannelTopic,
   unarchiveChannel,
@@ -169,6 +171,7 @@ export const app = defineApp({
               "channels:read", // For getting public channel info
               "groups:read", // For getting private channel info
               "users:read", // For getting user info
+              "users:read.email", // For looking up users by email
             ],
           },
         },
@@ -307,12 +310,14 @@ To complete the Slack app setup:
 
     // Users
     getUserInfo: getUserInfo,
+    lookupUserByEmail: lookupUserByEmail,
 
     // Channels
     createChannel: createChannel,
     archiveChannel: archiveChannel,
     unarchiveChannel: unarchiveChannel,
     getChannelInfo: getChannelInfo,
+    lookupChannelByName: lookupChannelByName,
     setChannelTopic: setChannelTopic,
     setChannelPurpose: setChannelPurpose,
     inviteUsersToChannel: inviteUsersToChannel,
