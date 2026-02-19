@@ -6,6 +6,7 @@ import {
 import { AppBlock, events } from "@slflows/sdk/v1";
 
 import { callSlackApi } from "../slackClient.ts";
+import { channelIdConfig } from "./utils/channelId.ts";
 
 export const createChannel: AppBlock = {
   name: "Create Channel",
@@ -120,12 +121,7 @@ export const archiveChannel: AppBlock = {
       name: "Archive",
       description: "Trigger archiving the specified channel.",
       config: {
-        channelId: {
-          name: "Channel ID",
-          description: "ID of the channel (e.g., C0123ABC) to archive.",
-          type: "string",
-          required: true,
-        },
+        channelId: channelIdConfig,
       },
       async onEvent(input) {
         const { slackBotToken } = input.app.config;
@@ -178,12 +174,7 @@ export const unarchiveChannel: AppBlock = {
       name: "Unarchive",
       description: "Trigger unarchiving the specified channel.",
       config: {
-        channelId: {
-          name: "Channel ID",
-          description: "ID of the channel (e.g., C0123ABC) to unarchive.",
-          type: "string",
-          required: true,
-        },
+        channelId: channelIdConfig,
       },
       async onEvent(input) {
         const { slackBotToken } = input.app.config;
@@ -236,13 +227,7 @@ export const getChannelInfo: AppBlock = {
       name: "Get",
       description: "Trigger getting information about the specified channel.",
       config: {
-        channelId: {
-          name: "Channel ID",
-          description:
-            "ID of the channel (e.g., C0123ABC) to get information about.",
-          type: "string",
-          required: true,
-        },
+        channelId: channelIdConfig,
       },
       async onEvent(input) {
         const { slackBotToken } = input.app.config;
@@ -376,13 +361,7 @@ export const setChannelTopic: AppBlock = {
       name: "Set",
       description: "Trigger setting the topic for the specified channel.",
       config: {
-        channelId: {
-          name: "Channel ID",
-          description:
-            "ID of the channel (e.g., C0123ABC) to set the topic for.",
-          type: "string",
-          required: true,
-        },
+        channelId: channelIdConfig,
         topic: {
           name: "Topic",
           description: "The new topic for the channel.",
@@ -447,13 +426,7 @@ export const setChannelPurpose: AppBlock = {
       name: "Set",
       description: "Trigger setting the purpose for the specified channel.",
       config: {
-        channelId: {
-          name: "Channel ID",
-          description:
-            "ID of the channel (e.g., C0123ABC) to set the purpose for.",
-          type: "string",
-          required: true,
-        },
+        channelId: channelIdConfig,
         purpose: {
           name: "Purpose",
           description: "The new purpose for the channel.",
@@ -519,12 +492,7 @@ export const inviteUsersToChannel: AppBlock = {
       name: "Invite",
       description: "Trigger inviting users to the specified channel.",
       config: {
-        channelId: {
-          name: "Channel ID",
-          description: "ID of the channel (e.g., C0123ABC) to invite users to.",
-          type: "string",
-          required: true,
-        },
+        channelId: channelIdConfig,
         users: {
           name: "User IDs",
           description:
@@ -610,13 +578,7 @@ export const kickUsersFromChannel: AppBlock = {
       name: "Kick",
       description: "Trigger removing users from the specified channel.",
       config: {
-        channelId: {
-          name: "Channel ID",
-          description:
-            "ID of the channel (e.g., C0123ABC) to remove users from.",
-          type: "string",
-          required: true,
-        },
+        channelId: channelIdConfig,
         user: {
           name: "User ID",
           description: "User ID (e.g., U0123ABC) to remove from the channel.",

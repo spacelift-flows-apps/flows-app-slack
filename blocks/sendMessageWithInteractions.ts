@@ -15,6 +15,7 @@ import {
 import { AppBlock, events, kv } from "@slflows/sdk/v1";
 
 import { callSlackApi } from "../slackClient.ts";
+import { channelIdConfig } from "./utils/channelId.ts";
 
 export default {
   name: "Send Message With Interactions",
@@ -26,13 +27,7 @@ export default {
       name: "Send",
       description: "Trigger sending the interactive message.",
       config: {
-        channelId: {
-          name: "Channel or User ID",
-          description:
-            "ID of the channel (e.g., C0123ABC), DM (D0123ABC), or user (U0123ABC) to send the message to.",
-          type: "string",
-          required: true,
-        },
+        channelId: channelIdConfig,
         blocks: {
           name: "Message Blocks",
           description:

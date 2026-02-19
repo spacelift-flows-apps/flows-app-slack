@@ -1,4 +1,5 @@
 import { AppBlock, blocks, events, messaging } from "@slflows/sdk/v1"; // TODO: Move the http subscription event handler here.
+import { optionalChannelIdConfig } from "./utils/channelId.ts";
 
 import {
   slackAppIdSchema,
@@ -66,10 +67,17 @@ export const handleEventSubscriptions = async (event: any) => {
       typeIds: ["messagesSubscription", "conversation", "botThread"],
     });
 
-    // Filter blocks by their configured channel (if present)
+    // Filter blocks by their configured channel (if present).
+    // For DMs (channel_type "im"), also match the sender's user ID against
+    // the configured channel ID, since users configure a user ID (U...) but
+    // the event's channel is a DM channel ID (D...).
     const relevantBlocks = messageSubscriptionBlocks.blocks.filter((block) => {
       const configuredChannelId = block.config.channelId;
-      return !configuredChannelId || configuredChannelId === event.channel;
+      return (
+        !configuredChannelId ||
+        configuredChannelId === event.channel ||
+        (event.channel_type === "im" && configuredChannelId === event.user)
+      );
     });
 
     if (relevantBlocks.length > 0) {
@@ -92,11 +100,9 @@ export const appMentionSubscription: AppBlock = {
   category: "Messaging",
   config: {
     channelId: {
-      name: "Channel ID (Optional)",
+      ...optionalChannelIdConfig,
       description:
         "If specified, only app mentions from this channel will be received. Leave empty to receive mentions from all channels the app has access to.",
-      type: "string",
-      required: false,
     },
   },
   async onInternalMessage({ block, message }) {
@@ -265,11 +271,9 @@ export const messagesSubscription: AppBlock = {
   category: "Messaging",
   config: {
     channelId: {
-      name: "Channel ID (Optional)",
+      ...optionalChannelIdConfig,
       description:
         "If specified, only messages from this channel will be received. Leave empty to receive messages from all channels the app has access to.",
-      type: "string",
-      required: false,
     },
     includeOwnMessages: {
       name: "Include Own Messages",
@@ -283,9 +287,19 @@ export const messagesSubscription: AppBlock = {
   async onInternalMessage({ app, block, message }) {
     const slackEvent = message.body;
     if (slackEvent && slackEvent.type === "message") {
-      // Check if we should filter by channel
+      // Check if we should filter by channel.
+      // For DMs, also match the sender's user ID against the configured
+      // channel ID, since users configure a user ID (U...) but the event's
+      // channel is a DM channel ID (D...).
       const configuredChannelId = block.config.channelId;
-      if (configuredChannelId && slackEvent.channel !== configuredChannelId) {
+      if (
+        configuredChannelId &&
+        configuredChannelId !== slackEvent.channel &&
+        !(
+          slackEvent.channel_type === "im" &&
+          configuredChannelId === slackEvent.user
+        )
+      ) {
         console.error(
           "Message unexpectedly received from a different channel: ",
           slackEvent.channel,
