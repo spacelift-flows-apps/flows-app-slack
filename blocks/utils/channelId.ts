@@ -175,6 +175,14 @@ export const channelOnlyIdConfig = {
   suggestValues: suggestChannelOnly,
 };
 
+export const optionalChannelOnlyIdConfig = {
+  name: "Channel ID",
+  description: "ID of the channel (e.g., C0123ABC).",
+  type: "string" as const,
+  required: false as const,
+  suggestValues: suggestChannelOnly,
+};
+
 export const channelOrUserIdConfig = {
   name: "Channel or User ID",
   description:

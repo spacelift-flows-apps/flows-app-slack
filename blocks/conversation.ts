@@ -1,6 +1,6 @@
 import { AppBlock, events, kv, EventInput } from "@slflows/sdk/v1";
 import { callSlackApi } from "../slackClient.ts";
-import { optionalChannelOrUserIdConfig } from "./utils/channelId.ts";
+import { optionalChannelOnlyIdConfig } from "./utils/channelId.ts";
 import sendMessageBlocks from "./sendMessageBlocks.ts";
 import { messagesSubscription } from "./subscriptions.ts";
 
@@ -36,7 +36,7 @@ export const conversation: AppBlock = {
       required: false,
     },
     channelId: {
-      ...optionalChannelOrUserIdConfig,
+      ...optionalChannelOnlyIdConfig,
       description:
         "Restrict activity to this specific channel only. " +
         "If set, the bot will only respond to messages and mentions in this channel.",
@@ -65,10 +65,18 @@ export const conversation: AppBlock = {
       return;
     }
 
-    // If channel is configured, only process messages from that channel
+    // If channel is configured, only process messages from that channel.
+    // For DMs, also match the sender's user ID against the configured
+    // channel ID, since users configure a user ID (U...) but the event's
+    // channel is a DM channel ID (D...).
+    const configuredChannelId = block.config.channelId;
     if (
-      block.config.channelId &&
-      slackEvent.channel !== block.config.channelId
+      configuredChannelId &&
+      configuredChannelId !== slackEvent.channel &&
+      !(
+        slackEvent.channel_type === "im" &&
+        configuredChannelId === slackEvent.user
+      )
     ) {
       console.error(
         "Event unexpectedly received from a different channel: ",
