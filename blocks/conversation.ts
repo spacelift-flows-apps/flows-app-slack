@@ -1,6 +1,6 @@
 import { AppBlock, events, kv, EventInput } from "@slflows/sdk/v1";
 import { callSlackApi } from "../slackClient.ts";
-import { optionalChannelIdConfig } from "./utils/channelId.ts";
+import { optionalChannelOrUserIdConfig } from "./utils/channelId.ts";
 import sendMessageBlocks from "./sendMessageBlocks.ts";
 import { messagesSubscription } from "./subscriptions.ts";
 
@@ -36,7 +36,7 @@ export const conversation: AppBlock = {
       required: false,
     },
     channelId: {
-      ...optionalChannelIdConfig,
+      ...optionalChannelOrUserIdConfig,
       description:
         "Restrict activity to this specific channel only. " +
         "If set, the bot will only respond to messages and mentions in this channel.",

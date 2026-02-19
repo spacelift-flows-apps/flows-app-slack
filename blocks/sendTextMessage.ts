@@ -15,7 +15,7 @@ import {
 import { AppBlock, events } from "@slflows/sdk/v1";
 
 import { callSlackApi } from "../slackClient.ts";
-import { channelIdConfig } from "./utils/channelId.ts";
+import { channelOrUserIdConfig } from "./utils/channelId.ts";
 
 export default {
   name: "Send Text Message",
@@ -27,7 +27,7 @@ export default {
       name: "Send",
       description: "Trigger sending the message.",
       config: {
-        channelId: channelIdConfig,
+        channelId: channelOrUserIdConfig,
         text: {
           name: "Message Text",
           description:

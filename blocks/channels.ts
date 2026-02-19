@@ -6,7 +6,7 @@ import {
 import { AppBlock, events } from "@slflows/sdk/v1";
 
 import { callSlackApi } from "../slackClient.ts";
-import { channelIdConfig } from "./utils/channelId.ts";
+import { channelOnlyIdConfig } from "./utils/channelId.ts";
 
 export const createChannel: AppBlock = {
   name: "Create Channel",
@@ -121,7 +121,7 @@ export const archiveChannel: AppBlock = {
       name: "Archive",
       description: "Trigger archiving the specified channel.",
       config: {
-        channelId: channelIdConfig,
+        channelId: channelOnlyIdConfig,
       },
       async onEvent(input) {
         const { slackBotToken } = input.app.config;
@@ -174,7 +174,7 @@ export const unarchiveChannel: AppBlock = {
       name: "Unarchive",
       description: "Trigger unarchiving the specified channel.",
       config: {
-        channelId: channelIdConfig,
+        channelId: channelOnlyIdConfig,
       },
       async onEvent(input) {
         const { slackBotToken } = input.app.config;
@@ -227,7 +227,7 @@ export const getChannelInfo: AppBlock = {
       name: "Get",
       description: "Trigger getting information about the specified channel.",
       config: {
-        channelId: channelIdConfig,
+        channelId: channelOnlyIdConfig,
       },
       async onEvent(input) {
         const { slackBotToken } = input.app.config;
@@ -361,7 +361,7 @@ export const setChannelTopic: AppBlock = {
       name: "Set",
       description: "Trigger setting the topic for the specified channel.",
       config: {
-        channelId: channelIdConfig,
+        channelId: channelOnlyIdConfig,
         topic: {
           name: "Topic",
           description: "The new topic for the channel.",
@@ -426,7 +426,7 @@ export const setChannelPurpose: AppBlock = {
       name: "Set",
       description: "Trigger setting the purpose for the specified channel.",
       config: {
-        channelId: channelIdConfig,
+        channelId: channelOnlyIdConfig,
         purpose: {
           name: "Purpose",
           description: "The new purpose for the channel.",
@@ -492,7 +492,7 @@ export const inviteUsersToChannel: AppBlock = {
       name: "Invite",
       description: "Trigger inviting users to the specified channel.",
       config: {
-        channelId: channelIdConfig,
+        channelId: channelOnlyIdConfig,
         users: {
           name: "User IDs",
           description:
@@ -578,7 +578,7 @@ export const kickUsersFromChannel: AppBlock = {
       name: "Kick",
       description: "Trigger removing users from the specified channel.",
       config: {
-        channelId: channelIdConfig,
+        channelId: channelOnlyIdConfig,
         user: {
           name: "User ID",
           description: "User ID (e.g., U0123ABC) to remove from the channel.",

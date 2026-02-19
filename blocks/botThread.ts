@@ -1,6 +1,6 @@
 import { AppBlock, events, kv, EventInput } from "@slflows/sdk/v1";
 import { callSlackApi } from "../slackClient.ts";
-import { optionalChannelIdConfig } from "./utils/channelId.ts";
+import { optionalChannelOrUserIdConfig } from "./utils/channelId.ts";
 import { messagesSubscription } from "./subscriptions.ts";
 import sendMessageBlocks from "./sendMessageBlocks.ts";
 import { slackBlocksSchema } from "../jsonschema/jsonschema.ts";
@@ -15,7 +15,7 @@ export const botThread: AppBlock = {
 
   config: {
     channelId: {
-      ...optionalChannelIdConfig,
+      ...optionalChannelOrUserIdConfig,
       name: "Default Channel ID",
       description: "Default channel ID to use if not specified in inputs.",
     },
@@ -37,7 +37,7 @@ export const botThread: AppBlock = {
         "Start a new thread by posting the first message with Block Kit blocks.",
       config: {
         channelId: {
-          ...optionalChannelIdConfig,
+          ...optionalChannelOrUserIdConfig,
           description:
             "ID of the channel to post the message to. If not provided, uses the block's default channel.",
         },
@@ -63,7 +63,7 @@ export const botThread: AppBlock = {
       description: "Reply to an existing thread with Block Kit blocks.",
       config: {
         channelId: {
-          ...optionalChannelIdConfig,
+          ...optionalChannelOrUserIdConfig,
           description:
             "ID of the channel where the thread exists. If not provided, uses the block's default channel.",
         },

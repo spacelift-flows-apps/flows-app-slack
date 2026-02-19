@@ -1,5 +1,5 @@
 import { AppBlock, blocks, events, messaging } from "@slflows/sdk/v1"; // TODO: Move the http subscription event handler here.
-import { optionalChannelIdConfig } from "./utils/channelId.ts";
+import { optionalChannelOrUserIdConfig } from "./utils/channelId.ts";
 
 import {
   slackAppIdSchema,
@@ -100,7 +100,7 @@ export const appMentionSubscription: AppBlock = {
   category: "Messaging",
   config: {
     channelId: {
-      ...optionalChannelIdConfig,
+      ...optionalChannelOrUserIdConfig,
       description:
         "If specified, only app mentions from this channel will be received. Leave empty to receive mentions from all channels the app has access to.",
     },
@@ -271,7 +271,7 @@ export const messagesSubscription: AppBlock = {
   category: "Messaging",
   config: {
     channelId: {
-      ...optionalChannelIdConfig,
+      ...optionalChannelOrUserIdConfig,
       description:
         "If specified, only messages from this channel will be received. Leave empty to receive messages from all channels the app has access to.",
     },

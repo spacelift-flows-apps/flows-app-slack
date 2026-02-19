@@ -17,7 +17,7 @@ async function fetchChannels(slackBotToken: string): Promise<Channel[]> {
   const allChannels: Channel[] = [];
   let cursor: string | undefined;
 
-  do {
+  for (let page = 0; page < 10; page++) {
     const payload: Record<string, any> = {
       types: "public_channel,private_channel",
       exclude_archived: true,
@@ -44,7 +44,8 @@ async function fetchChannels(slackBotToken: string): Promise<Channel[]> {
     }
 
     cursor = responseData.response_metadata?.next_cursor;
-  } while (cursor);
+    if (!cursor) break;
+  }
 
   return allChannels;
 }
@@ -53,7 +54,7 @@ async function fetchUsers(slackBotToken: string): Promise<User[]> {
   const allUsers: User[] = [];
   let cursor: string | undefined;
 
-  do {
+  for (let page = 0; page < 10; page++) {
     const payload: Record<string, any> = {
       limit: 1000,
     };
@@ -79,7 +80,8 @@ async function fetchUsers(slackBotToken: string): Promise<User[]> {
     }
 
     cursor = responseData.response_metadata?.next_cursor;
-  } while (cursor);
+    if (!cursor) break;
+  }
 
   return allUsers;
 }
@@ -93,6 +95,37 @@ const getUsers = memoizee(fetchUsers, {
   maxAge: 60000,
   promise: true,
 });
+
+async function suggestChannelOnly(input: any) {
+  const slackBotToken = input.app.config.slackBotToken as string | undefined;
+
+  if (!slackBotToken) {
+    return {
+      suggestedValues: [],
+      message: "Configure the Slack Bot Token to receive channel suggestions.",
+    };
+  }
+
+  const channels = await getChannels(slackBotToken);
+
+  let values = channels.map((channel) => ({
+    label: channel.is_private
+      ? `${channel.name} (private)`
+      : `#${channel.name}`,
+    value: channel.id,
+  }));
+
+  if (input.searchPhrase) {
+    const searchLower = input.searchPhrase.toLowerCase();
+    values = values.filter(
+      (v) =>
+        v.label.toLowerCase().includes(searchLower) ||
+        v.value.toLowerCase().includes(searchLower),
+    );
+  }
+
+  return { suggestedValues: values.slice(0, 50) };
+}
 
 async function suggestChannelId(input: any) {
   const slackBotToken = input.app.config.slackBotToken as string | undefined;
@@ -134,8 +167,16 @@ async function suggestChannelId(input: any) {
   return { suggestedValues: values.slice(0, 50) };
 }
 
-export const channelIdConfig = {
+export const channelOnlyIdConfig = {
   name: "Channel ID",
+  description: "ID of the channel (e.g., C0123ABC).",
+  type: "string" as const,
+  required: true as const,
+  suggestValues: suggestChannelOnly,
+};
+
+export const channelOrUserIdConfig = {
+  name: "Channel or User ID",
   description:
     "ID of the channel (e.g., C0123ABC), DM (D0123ABC), or user (U0123ABC).",
   type: "string" as const,
@@ -143,8 +184,8 @@ export const channelIdConfig = {
   suggestValues: suggestChannelId,
 };
 
-export const optionalChannelIdConfig = {
-  name: "Channel ID",
+export const optionalChannelOrUserIdConfig = {
+  name: "Channel or User ID",
   description:
     "ID of the channel (e.g., C0123ABC), DM (D0123ABC), or user (U0123ABC).",
   type: "string" as const,

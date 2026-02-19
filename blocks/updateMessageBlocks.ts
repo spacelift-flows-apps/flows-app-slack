@@ -7,7 +7,7 @@ import {
 import { AppBlock, events } from "@slflows/sdk/v1";
 
 import { callSlackApi } from "../slackClient.ts";
-import { channelIdConfig } from "./utils/channelId.ts";
+import { channelOnlyIdConfig } from "./utils/channelId.ts";
 
 export default {
   name: "Update Message Blocks",
@@ -18,7 +18,7 @@ export default {
       name: "Update",
       description: "Trigger updating the message with new blocks.",
       config: {
-        channelId: channelIdConfig,
+        channelId: channelOnlyIdConfig,
         ts: {
           name: "Message Timestamp",
           description: "Timestamp (ts) of the message to update.",
