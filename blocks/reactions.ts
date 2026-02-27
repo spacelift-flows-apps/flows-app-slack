@@ -6,6 +6,7 @@ import {
 import { AppBlock, events } from "@slflows/sdk/v1";
 
 import { callSlackApi } from "../slackClient.ts";
+import { channelOnlyIdConfig } from "./utils/channelId.ts";
 
 export const getReactions: AppBlock = {
   name: "Get Reactions",
@@ -16,13 +17,7 @@ export const getReactions: AppBlock = {
       name: "Get",
       description: "Trigger getting reactions for the specified message.",
       config: {
-        channelId: {
-          name: "Channel ID",
-          description:
-            "ID of the channel (e.g., C0123ABC) containing the message.",
-          type: "string",
-          required: true,
-        },
+        channelId: channelOnlyIdConfig,
         ts: {
           name: "Message Timestamp",
           description:
@@ -147,13 +142,7 @@ export const addReaction: AppBlock = {
       name: "Add",
       description: "Trigger adding a reaction to the specified message.",
       config: {
-        channelId: {
-          name: "Channel ID",
-          description:
-            "ID of the channel (e.g., C0123ABC) containing the message.",
-          type: "string",
-          required: true,
-        },
+        channelId: channelOnlyIdConfig,
         ts: {
           name: "Message Timestamp",
           description:
@@ -226,13 +215,7 @@ export const removeReaction: AppBlock = {
       name: "Remove",
       description: "Trigger removing a reaction from the specified message.",
       config: {
-        channelId: {
-          name: "Channel ID",
-          description:
-            "ID of the channel (e.g., C0123ABC) containing the message.",
-          type: "string",
-          required: true,
-        },
+        channelId: channelOnlyIdConfig,
         ts: {
           name: "Message Timestamp",
           description:

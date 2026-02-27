@@ -6,6 +6,7 @@ import {
 import { AppBlock, events } from "@slflows/sdk/v1";
 
 import { callSlackApi } from "../slackClient.ts";
+import { channelOnlyIdConfig } from "./utils/channelId.ts";
 
 export default {
   name: "Delete Message",
@@ -17,13 +18,7 @@ export default {
       name: "Delete",
       description: "Trigger deletion of the specified message.",
       config: {
-        channelId: {
-          name: "Channel ID",
-          description:
-            "ID of the channel (e.g., C0123ABC) where the message is located.",
-          type: "string",
-          required: true,
-        },
+        channelId: channelOnlyIdConfig,
         ts: {
           name: "Message Timestamp",
           description: "The timestamp (ts) of the message to delete.",

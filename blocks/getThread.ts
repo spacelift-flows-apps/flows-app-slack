@@ -1,5 +1,6 @@
 import { AppBlock, events } from "@slflows/sdk/v1";
 import { callSlackApi } from "../slackClient.ts";
+import { channelOnlyIdConfig } from "./utils/channelId.ts";
 import {
   slackChannelIdSchema,
   slackMessageTimestampSchema,
@@ -17,13 +18,7 @@ export const getThread: AppBlock = {
       description:
         "Retrieve the entire thread for the given message timestamp.",
       config: {
-        channelId: {
-          name: "Channel ID",
-          description:
-            "ID of the channel where the thread exists (e.g., C0123ABC).",
-          type: "string",
-          required: true,
-        },
+        channelId: channelOnlyIdConfig,
         threadTs: {
           name: "Thread Timestamp",
           description:
