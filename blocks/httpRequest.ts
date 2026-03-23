@@ -3,8 +3,7 @@ import { callSlackApi } from "../slackClient.ts";
 
 export const httpRequest: AppBlock = {
   name: "HTTP Request",
-  description:
-    "Make an authenticated request to any Slack API method.",
+  description: "Make an authenticated request to any Slack API method.",
   category: "Request",
   inputs: {
     default: {
@@ -38,13 +37,10 @@ export const httpRequest: AppBlock = {
         }
 
         const method = input.event.inputConfig.method as string;
-        const payload = (input.event.inputConfig.payload as Record<string, any>) ?? {};
+        const payload =
+          (input.event.inputConfig.payload as Record<string, any>) ?? {};
 
-        const responseData = await callSlackApi(
-          method,
-          payload,
-          slackBotToken,
-        );
+        const responseData = await callSlackApi(method, payload, slackBotToken);
 
         await events.emit(responseData);
       },
