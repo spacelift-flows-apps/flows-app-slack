@@ -18,6 +18,17 @@ import {
 } from "../jsonschema/jsonschema.ts";
 
 export const handleEventSubscriptions = async (event: any) => {
+  // Always route to generic eventSubscription blocks (filtering happens in the block).
+  const eventSubscriptionBlocks = await blocks.list({
+    typeIds: ["eventSubscription"],
+  });
+  if (eventSubscriptionBlocks.blocks.length > 0) {
+    await messaging.sendToBlocks({
+      blockIds: eventSubscriptionBlocks.blocks.map((b) => b.id),
+      body: event,
+    });
+  }
+
   if (event.type === "app_mention") {
     const mentionSubscriptionBlocks = await blocks.list({
       typeIds: ["appMentionSubscription", "conversation"],
