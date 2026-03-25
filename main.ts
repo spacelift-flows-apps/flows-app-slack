@@ -6,6 +6,8 @@ import {
   messagesSubscription,
   reactionsSubscription,
 } from "./blocks/subscriptions.ts";
+import { httpRequest } from "./blocks/httpRequest.ts";
+import { eventSubscription } from "./blocks/eventSubscription.ts";
 import {
   handleEventsEndpoint,
   handleInteractivityEndpoint,
@@ -330,5 +332,9 @@ To complete the Slack app setup:
     conversation,
     botThread,
     getThread,
+
+    // Generic
+    httpRequest,
+    eventSubscription,
   },
 });
