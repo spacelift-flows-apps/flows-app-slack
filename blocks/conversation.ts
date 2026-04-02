@@ -6,6 +6,7 @@ import { messagesSubscription } from "./subscriptions.ts";
 
 export const conversation: AppBlock = {
   name: "Conversation",
+  entrypoint: true,
   description:
     "High-level abstraction for managing a conversation with " +
     "the bot user. A conversation is started by mentioning the both in a " +

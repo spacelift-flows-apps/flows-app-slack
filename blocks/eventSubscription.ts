@@ -2,6 +2,7 @@ import { AppBlock, events } from "@slflows/sdk/v1";
 
 export const eventSubscription: AppBlock = {
   name: "Event Subscription",
+  entrypoint: true,
   description:
     "Subscribes to all Slack events received by this app, with optional filtering by event type.",
   category: "Events",
