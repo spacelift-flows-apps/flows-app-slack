@@ -7,6 +7,7 @@ import { slackBlocksSchema } from "../jsonschema/jsonschema.ts";
 
 export const botThread: AppBlock = {
   name: "Bot Thread",
+  entrypoint: true,
   description:
     "Bot-initiated thread management. Allows starting a thread with Slack Block Kit blocks " +
     "and continuing the conversation. Tracks replies from users and emits bot " +

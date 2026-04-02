@@ -106,6 +106,7 @@ export const handleEventSubscriptions = async (event: any) => {
 
 export const appMentionSubscription: AppBlock = {
   name: "App Mention Subscription",
+  entrypoint: true,
   description:
     "Subscribes to @mentions of this Slack app in any channel it's a member of.",
   category: "Messaging",
@@ -199,6 +200,7 @@ export const appMentionSubscription: AppBlock = {
 
 export const reactionsSubscription: AppBlock = {
   name: "Reactions Subscription",
+  entrypoint: true,
   description:
     "Subscribes to reaction add and remove events on Slack messages.",
   category: "Reactions",
@@ -277,6 +279,7 @@ export const reactionsSubscription: AppBlock = {
 
 export const messagesSubscription: AppBlock = {
   name: "Messages Subscription",
+  entrypoint: true,
   description:
     "Subscribes to messages in Slack channels, optionally filtered by specific channel.",
   category: "Messaging",

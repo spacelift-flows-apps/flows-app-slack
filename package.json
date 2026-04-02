@@ -1,7 +1,7 @@
 {
   "type": "module",
   "dependencies": {
-    "@slflows/sdk": "^0.7.0",
+    "@slflows/sdk": "^0.13.0",
     "@types/node": "^22.15.28",
     "memoizee": "^0.4.17",
     "typescript": "^5.8.3"
