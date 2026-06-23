@@ -12,7 +12,7 @@ import {
   slackUserIdSchema,
 } from "../jsonschema/jsonschema.ts";
 
-import { AppBlock, events, kv } from "@slflows/sdk/v1";
+import { AppBlock, events, kv, timers } from "@slflows/sdk/v1";
 
 import { callSlackApi } from "../slackClient.ts";
 import { channelOrUserIdConfig } from "./utils/channelId.ts";
@@ -55,10 +55,18 @@ export default {
           type: "string",
           required: false,
         },
+        timeout: {
+          name: "Timeout (seconds)",
+          description:
+            "If set, start a timer when the message is sent. When it fires, an event is emitted on the 'Timeout' output and any further interactions on the message are ignored. Leave empty to listen for interactions indefinitely.",
+          type: "number",
+          required: false,
+        },
       },
       async onEvent(input) {
         const { slackBotToken } = input.app.config;
-        const { channelId, blocks, text, threadTs } = input.event.inputConfig;
+        const { channelId, blocks, text, threadTs, timeout } =
+          input.event.inputConfig;
 
         if (!slackBotToken) {
           throw new Error(
@@ -98,6 +106,19 @@ export default {
             originalEventId: input.event.id,
           },
         });
+
+        // If a timeout is configured, start a timer. When it fires we emit on
+        // the "timeout" output and stop listening for interactions.
+        if (timeout !== undefined && timeout > 0) {
+          await timers.block.set(timeout, {
+            description: "Stop listening for message interactions",
+            inputPayload: {
+              messageTs,
+              channel: responseData.channel,
+              originalEventId: input.event.id,
+            },
+          });
+        }
 
         await events.emit(
           {
@@ -145,6 +166,25 @@ export default {
         },
       );
     }
+  },
+  async onTimer(input) {
+    const { messageTs, channel, originalEventId } = input.timer.payload;
+
+    // Stop routing further interactions for this message. Once the KV entry is
+    // gone, the HTTP interactivity handler can no longer resolve this message
+    // to a block, so any later interactions are silently ignored.
+    await kv.app.delete([`interaction:${messageTs}`]);
+
+    await events.emit(
+      {
+        ts: messageTs,
+        channel,
+      },
+      {
+        outputKey: "timeout",
+        parentEventId: originalEventId,
+      },
+    );
   },
   outputs: {
     sent: {
@@ -401,6 +441,21 @@ export default {
           },
         },
         required: ["type", "user", "trigger_id", "team", "channel"],
+      },
+    },
+    timeout: {
+      name: "Timeout",
+      description:
+        "Emitted when the configured timeout elapses before the message is interacted with. After this fires, further interactions on the message are ignored.",
+      possiblePrimaryParents: ["default"],
+      type: {
+        type: "object",
+        description: "Details about the message that timed out.",
+        properties: {
+          ts: slackMessageTimestampSchema,
+          channel: slackChannelIdSchema,
+        },
+        required: ["ts", "channel"],
       },
     },
   },
