@@ -1,6 +1,7 @@
 import { HTTPRequest, kv, messaging } from "@slflows/sdk/v1";
 
 import * as nodecrypto from "node:crypto";
+import { handleAppHomeInteractionSubscriptions } from "./blocks/appHomeInteractionSubscription.ts";
 import { handleEventSubscriptions } from "./blocks/subscriptions.ts";
 
 // Helper for Slack signature verification
@@ -128,6 +129,10 @@ export async function handleInteractivityEndpoint(
         );
       }
     } else {
+      if (await handleAppHomeInteractionSubscriptions(payload)) {
+        return { statusCode: 200 };
+      }
+
       // Handle message-based interactions (interactive_message, block_actions)
       const messageTs =
         payload.container?.message_ts ||

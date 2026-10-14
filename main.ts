@@ -42,6 +42,7 @@ import {
 } from "./blocks/channels.ts";
 import { authMetadata } from "./blocks/auth.ts";
 import { openViewWithInteractions } from "./blocks/views.ts";
+import { appHomeInteractionSubscription } from "./blocks/appHomeInteractionSubscription.ts";
 import { conversation } from "./blocks/conversation.ts";
 import { botThread } from "./blocks/botThread.ts";
 import { getThread } from "./blocks/getThread.ts";
@@ -149,7 +150,7 @@ export const app = defineApp({
             always_online: false,
           },
           app_home: {
-            home_tab_enabled: false,
+            home_tab_enabled: true,
             messages_tab_enabled: true,
             messages_tab_read_only_enabled: true,
           },
@@ -182,6 +183,7 @@ export const app = defineApp({
             request_url: eventsUrl,
             bot_events: [
               "app_mention",
+              "app_home_opened",
               "reaction_added",
               "reaction_removed",
               "message.channels",
@@ -327,6 +329,7 @@ To complete the Slack app setup:
 
     // Views
     openViewWithInteractions,
+    appHomeInteractionSubscription,
 
     // Conversations
     conversation,

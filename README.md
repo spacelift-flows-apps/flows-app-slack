@@ -32,6 +32,9 @@ The app needs to expose an HTTP endpoint to handle Events API and Interaction ca
 - `sendMessageWithInteractions`
   - Description: Sends a message to a Slack channel, with a json list of blocks as inputs. It may contain interactive elements (buttons, select menus, etc.). The block has two outputs, one for when the message is sent, and then one for message interactions.
   - Implementation: Stores an app-level keyvalue with metadata (blockId, original produced eventId) keyed by the sent slack message id. When the app receives interaction HTTP callbacks, it will look for the message related to the callback in the keyvalue store, and use internal messaging to notify the right block about it. That block will then produce the interaction event.
+- App Home Interaction Subscription
+  - Description: Subscribes to block actions from the app Home tab, optionally filtered by action ID prefix.
+  - Implementation: Routes signed Home interaction callbacks to matching subscription blocks. The output includes the short-lived trigger ID needed to open a modal.
 - `updateMessageBlocks`
   - Description: Updates a message by its id, with a json list of blocks as inputs.
   - Implementation: Raw API call.

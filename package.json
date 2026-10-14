@@ -17,6 +17,7 @@
     "setup": "./setup.sh",
     "bundle": "npx flowctl version bundle -e main.ts",
     "format": "npx prettier --write .",
+    "test": "node --loader ts-node/esm --test tests/*.test.ts",
     "typecheck": "npx tsc --noEmit"
   }
 }
